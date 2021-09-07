@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"flag"
 	"io"
 	"os"
 )
@@ -15,5 +16,15 @@ type App struct {
 }
 
 func (a *App) Run(argv []string) int {
+	fs := flag.NewFlagSet(argv[0], flag.ContinueOnError)
+	fs.SetOutput(a.errStream)
+	err := fs.Parse(argv[1:])
+	if err == flag.ErrHelp {
+		return 0
+	}
+	if err != nil {
+		return 1
+	}
+
 	return 0
 }
