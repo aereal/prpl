@@ -1,9 +1,12 @@
 package cli
 
 import (
+	"context"
 	"flag"
+	"fmt"
 	"io"
 	"os"
+	"os/exec"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -34,5 +37,24 @@ func (a *App) Run(argv []string) int {
 		return 1
 	}
 
+	ctx := context.Background()
+	if err := a.run(ctx, fs.Args()); err != nil {
+		log.Error().Err(err).Send()
+		return 1
+	}
+
 	return 0
+}
+
+func (a *App) run(ctx context.Context, args []string) error {
+	log.Debug().Strs("args", args).Send()
+	if len(args) == 0 {
+		return fmt.Errorf("the command must be given")
+	}
+
+	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
+	cmd.Stdout = a.outStream
+	cmd.Stderr = a.errStream
+
+	return cmd.Run()
 }
