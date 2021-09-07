@@ -4,7 +4,14 @@ import (
 	"flag"
 	"io"
 	"os"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
+
+func init() {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+}
 
 func NewApp() *App {
 	return &App{errStream: os.Stderr, outStream: os.Stdout}
@@ -23,6 +30,7 @@ func (a *App) Run(argv []string) int {
 		return 0
 	}
 	if err != nil {
+		log.Warn().Err(err).Send()
 		return 1
 	}
 
