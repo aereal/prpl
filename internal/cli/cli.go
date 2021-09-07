@@ -32,8 +32,10 @@ func (a *App) Run(argv []string) int {
 	fs.SetOutput(a.errStream)
 	var (
 		paramPath string
+		debug     bool
 	)
 	fs.StringVar(&paramPath, "path", "", "The parameter path to fetch; fetch all of descendants of the prefix")
+	fs.BoolVar(&debug, "debug", false, "enable debug logging")
 	err := fs.Parse(argv[1:])
 	if err == flag.ErrHelp {
 		return 0
@@ -46,6 +48,11 @@ func (a *App) Run(argv []string) int {
 		log.Error().Msg("path parameter must be given")
 		return 1
 	}
+	logLevel := zerolog.InfoLevel
+	if debug {
+		logLevel = zerolog.DebugLevel
+	}
+	zerolog.SetGlobalLevel(logLevel)
 
 	ctx := context.Background()
 	if err := a.run(ctx, paramPath, fs.Args()); err != nil {
