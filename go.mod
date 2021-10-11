@@ -3,7 +3,7 @@ module github.com/aereal/prpl
 go 1.17
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.9.1
+	github.com/aws/aws-sdk-go-v2 v1.9.2
 	github.com/aws/aws-sdk-go-v2/config v1.8.0
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.10.1
 	github.com/golang/mock v1.6.0
